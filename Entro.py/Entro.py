@@ -1,4 +1,4 @@
-import random
+import secrets
 import string
 
 def calculate_entropy_from_passphrase(passphrase, wordlist, use_1337, num_words, capitalize_option, add_numbers, num_digits):
@@ -53,10 +53,10 @@ def leet_substitution(word, substitution_chance=0.5):
     :param substitution_chance: The probability (0-1) that a character will be substituted.
     :return: The word with random 1337 substitutions applied.
     """
-    return ''.join([random.choice(leet_dict[char]) if char in leet_dict and random.random() < substitution_chance else char for char in word])
+    return ''.join([secrets.choice(leet_dict[char]) if char in leet_dict and secrets.randbelow(100) < (substitution_chance * 100) else char for char in word])
 
 def random_capitalize(word):
-    return ''.join([char.upper() if random.choice([True, False]) else char for char in word])
+    return ''.join([char.upper() if secrets.choice([True, False]) else char for char in word])
 
 def generate_passphrase(wordlist, num_words=4, separator='_', capitalize_option='none', add_numbers=False, num_digits=0, use_1337=False, substitution_chance=0.5):
     """
@@ -72,7 +72,7 @@ def generate_passphrase(wordlist, num_words=4, separator='_', capitalize_option=
     substitution_chance: The probability that a character will be substituted with 1337 (default is 0.5).
     :return: A string containing the generated passphrase.
     """
-    selected_words = [random.choice(wordlist) for _ in range(num_words)]
+    selected_words = [secrets.choice(wordlist) for _ in range(num_words)]
     
     if use_1337:
         selected_words = [leet_substitution(word, substitution_chance) for word in selected_words]
@@ -83,7 +83,7 @@ def generate_passphrase(wordlist, num_words=4, separator='_', capitalize_option=
         selected_words = [random_capitalize(word) for word in selected_words]
     
     if add_numbers and num_digits > 0:
-        selected_words = [word + str(random.randint(10**(num_digits-1), 10**num_digits - 1)) for word in selected_words]
+        selected_words = [word + str(secrets.randbelow(10**num_digits - 10**(num_digits-1)) + 10**(num_digits-1)) for word in selected_words]
     
     passphrase = separator.join(selected_words)
     
@@ -101,7 +101,7 @@ def load_wordlist(filepath):
 
 # Example usage
 if __name__ == "__main__":
-    wordlist_path = r"Path\To\Your\wordlist.txt" #Replace with your local path to either the provided wordlist or a custom wordlist
+    wordlist_path = r"Path\To\Your\Wordlist.txt"  # Replace with your local path to either the provided wordlist or a custom wordlist
     wordlist = load_wordlist(wordlist_path)
 
     # Gather user input in the desired order
